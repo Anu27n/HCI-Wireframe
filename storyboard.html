@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeRide - Interactive Storyboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .storyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .story-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+        }
+
+        .scene-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+
+        .scene-illustration {
+            background: #f0f4f8;
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+            text-align: center;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #e2e8f0;
+        }
+
+        .icon {
+            font-size: 5em;
+            margin-bottom: 15px;
+        }
+
+        .scene-title {
+            color: #2d3748;
+            font-size: 1.5em;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .scene-description {
+            color: #4a5568;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .user-action {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: 500;
+            color: #234e52;
+        }
+
+        .system-response {
+            background: #fef5e7;
+            border-left: 4px solid #f39c12;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: 500;
+            color: #7d6608;
+        }
+
+        .pain-point {
+            background: #ffe5e5;
+            border-left: 4px solid #e53e3e;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-style: italic;
+            color: #742a2a;
+        }
+
+        .solution {
+            background: #e6f7ff;
+            border-left: 4px solid #3182ce;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: 500;
+            color: #2a4365;
+        }
+
+        .persona-card {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            grid-column: 1 / -1;
+        }
+
+        .persona-header {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .persona-avatar {
+            font-size: 6em;
+        }
+
+        .persona-info h2 {
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .persona-details {
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .journey-flow {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .flow-title {
+            text-align: center;
+            color: #2d3748;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .flow-step {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .flow-arrow {
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .emotional-state {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 10px;
+        }
+
+        .emotion {
+            text-align: center;
+        }
+
+        .emotion-icon {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .emotion-label {
+            font-size: 0.9em;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .storyboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+
+        .legend {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            grid-column: 1 / -1;
+        }
+
+        .legend-title {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚑 SafeRide Storyboard</h1>
+            <p class="subtitle">User Journey: Emergency Vehicle Assistance for Elderly & Disabled</p>
+        </header>
+
+        <div class="storyboard-grid">
+            <!-- Persona Card -->
+            <div class="persona-card">
+                <div class="persona-header">
+                    <div class="persona-avatar">👴</div>
+                    <div class="persona-info">
+                        <h2>Meet Robert, 72 years old</h2>
+                        <div class="persona-details">
+                            <strong>Background:</strong> Retired teacher, lives alone, has diabetes and mild arthritis<br>
+                            <strong>Technology Level:</strong> Basic smartphone user, prefers simple interfaces<br>
+                            <strong>Challenges:</strong> Poor vision, shaky hands, lives 15 minutes from nearest hospital<br>
+                            <strong>Goal:</strong> Quickly get help during medical emergencies without complex steps
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journey Flow -->
+            <div class="journey-flow">
+                <h3 class="flow-title">📍 User Journey Overview</h3>
+                <div class="flow-steps">
+                    <div class="flow-step">
+                        <div style="font-size: 2em;">😰</div>
+                        <div>Emergency Occurs</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div style="font-size: 2em;">📱</div>
+                        <div>Opens SafeRide</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div style="font-size: 2em;">🆘</div>
+                        <div>Press SOS Button</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div style="font-size: 2em;">🚑</div>
+                        <div>Help Dispatched</div>
+                    </div>
+                    <div class="flow-arrow">→</div>
+                    <div class="flow-step">
+                        <div style="font-size: 2em;">✅</div>
+                        <div>Safe & Rescued</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene 1 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 1</div>
+                <div class="scene-illustration">
+                    <div class="icon">😰</div>
+                    <div style="color: #4a5568; font-weight: 500;">Robert feels chest pain at home</div>
+                </div>
+                <h3 class="scene-title">Emergency Situation</h3>
+                <p class="scene-description">
+                    It's Tuesday morning. Robert is having breakfast when he suddenly feels severe chest pain and dizziness. He's alone at home and needs immediate help.
+                </p>
+                <div class="pain-point">
+                    ❌ Pain Point: Traditional method requires dialing 911, explaining situation, providing address - difficult when panicked and in pain
+                </div>
+                <div class="emotional-state">
+                    <div class="emotion">
+                        <div class="emotion-icon">😨</div>
+                        <div class="emotion-label">Anxious</div>
+                    </div>
+                    <div class="emotion">
+                        <div class="emotion-icon">😓</div>
+                        <div class="emotion-label">Stressed</div>
+                    </div>
+                    <div class="emotion">
+                        <div class="emotion-icon">😰</div>
+                        <div class="emotion-label">Fearful</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene 2 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 2</div>
+                <div class="scene-illustration">
+                    <div class="icon">📱</div>
+                    <div style="color: #4a5568; font-weight: 500;">Reaches for smartphone</div>
+                </div>
+                <h3 class="scene-title">Opens SafeRide App</h3>
+                <p class="scene-description">
+                    Robert grabs his phone with shaking hands. The SafeRide app icon is prominently placed on his home screen.
+                </p>
+                <div class="user-action">
+                    👆 Action: Taps the large SafeRide icon (designed 2x larger than normal apps)
+                </div>
+                <div class="system-response">
+                    ⚡ System: App opens instantly to emergency home screen (no login needed)
+                </div>
+                <div class="solution">
+                    ✅ Solution: One-tap access, no navigation menus, instant launch
+                </div>
+            </div>
+
+            <!-- Scene 3 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 3</div>
+                <div class="scene-illustration">
+                    <div class="icon">🆘</div>
+                    <div style="color: #4a5568; font-weight: 500;">Giant red SOS button fills screen</div>
+                </div>
+                <h3 class="scene-title">Emergency Activation</h3>
+                <p class="scene-description">
+                    The app displays a large red emergency button that takes up 70% of the screen, with clear text: "PRESS FOR HELP"
+                </p>
+                <div class="user-action">
+                    👆 Action: Presses the SOS button OR says "Help me!" (voice activation)
+                </div>
+                <div class="system-response">
+                    ⚡ System: 
+                    <br>• Phone vibrates (haptic feedback)
+                    <br>• Loud confirmation beep
+                    <br>• "Help is on the way" voice message
+                    <br>• 3-second countdown before dispatch (cancel option)
+                </div>
+                <div class="solution">
+                    ✅ Solution: Multi-modal activation (touch + voice), clear feedback, accidental press prevention
+                </div>
+            </div>
+
+            <!-- Scene 4 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 4</div>
+                <div class="scene-illustration">
+                    <div class="icon">📍</div>
+                    <div style="color: #4a5568; font-weight: 500;">GPS automatically detects location</div>
+                </div>
+                <h3 class="scene-title">Automatic Location Sharing</h3>
+                <p class="scene-description">
+                    SafeRide automatically detects Robert's location using GPS and sends it to emergency services.
+                </p>
+                <div class="system-response">
+                    ⚡ System Automatically:
+                    <br>• Captures GPS coordinates
+                    <br>• Retrieves home address from profile
+                    <br>• Sends location to emergency dispatch
+                    <br>• Shares live location link
+                </div>
+                <div class="pain-point">
+                    ❌ Old Problem: Struggling to explain address while in pain
+                </div>
+                <div class="solution">
+                    ✅ Solution: Zero manual input needed, automatic location detection and sharing
+                </div>
+            </div>
+
+            <!-- Scene 5 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 5</div>
+                <div class="scene-illustration">
+                    <div class="icon">🏥</div>
+                    <div style="color: #4a5568; font-weight: 500;">Medical info transmitted</div>
+                </div>
+                <h3 class="scene-title">Medical Profile Shared</h3>
+                <p class="scene-description">
+                    Robert's pre-saved medical information is instantly transmitted to the emergency response team.
+                </p>
+                <div class="system-response">
+                    ⚡ Shared Information:
+                    <br>• Medical conditions: Diabetes, High BP
+                    <br>• Current medications: Metformin, Lisinopril
+                    <br>• Allergies: Penicillin
+                    <br>• Blood type: O+
+                    <br>• Emergency contacts: Daughter Sarah
+                </div>
+                <div class="solution">
+                    ✅ Solution: Responders arrive prepared with critical medical history
+                </div>
+            </div>
+
+            <!-- Scene 6 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 6</div>
+                <div class="scene-illustration">
+                    <div class="icon">👨‍👩‍👧</div>
+                    <div style="color: #4a5568; font-weight: 500;">Family member notified</div>
+                </div>
+                <h3 class="scene-title">Caregiver Alert</h3>
+                <p class="scene-description">
+                    Sarah, Robert's daughter, receives an instant notification on her phone about her father's emergency.
+                </p>
+                <div class="system-response">
+                    ⚡ Caregiver Receives:
+                    <br>• Push notification: "Emergency Alert: Robert needs help"
+                    <br>• SMS with location link
+                    <br>• Live tracking map
+                    <br>• Option to call Robert or emergency services
+                </div>
+                <div class="user-action">
+                    👆 Sarah's Action: Opens tracking link, sees ambulance ETA, drives to meet father
+                </div>
+                <div class="solution">
+                    ✅ Solution: Family stays informed and can coordinate help
+                </div>
+            </div>
+
+            <!-- Scene 7 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 7</div>
+                <div class="scene-illustration">
+                    <div class="icon">🚑</div>
+                    <div style="color: #4a5568; font-weight: 500;">Real-time tracking display</div>
+                </div>
+                <h3 class="scene-title">Ambulance Tracking</h3>
+                <p class="scene-description">
+                    Robert's phone now shows a simple, large display with the ambulance location and estimated arrival time.
+                </p>
+                <div class="system-response">
+                    ⚡ Display Shows:
+                    <br>• Large text: "HELP IS COMING"
+                    <br>• Simple map with ambulance icon
+                    <br>• Big countdown: "Arrives in 7 minutes"
+                    <br>• Voice updates every minute
+                </div>
+                <div class="solution">
+                    ✅ Solution: Reduces anxiety with visible help progress, voice updates for those who can't focus on screen
+                </div>
+                <div class="emotional-state">
+                    <div class="emotion">
+                        <div class="emotion-icon">😌</div>
+                        <div class="emotion-label">Relieved</div>
+                    </div>
+                    <div class="emotion">
+                        <div class="emotion-icon">🙏</div>
+                        <div class="emotion-label">Hopeful</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scene 8 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 8</div>
+                <div class="scene-illustration">
+                    <div class="icon">👨‍⚕️</div>
+                    <div style="color: #4a5568; font-weight: 500;">Paramedics arrive prepared</div>
+                </div>
+                <h3 class="scene-title">Professional Help Arrives</h3>
+                <p class="scene-description">
+                    Paramedics arrive at Robert's door in 7 minutes, already informed about his medical history.
+                </p>
+                <div class="system-response">
+                    ⚡ Paramedics Have:
+                    <br>• Exact location (even apartment number from profile)
+                    <br>• Medical history and current medications
+                    <br>• Known allergies
+                    <br>• Emergency contact information
+                </div>
+                <div class="solution">
+                    ✅ Outcome: Faster, more informed care. No time wasted on questions Robert might struggle to answer
+                </div>
+            </div>
+
+            <!-- Scene 9 -->
+            <div class="story-card">
+                <div class="scene-number">Scene 9</div>
+                <div class="scene-illustration">
+                    <div class="icon">✅</div>
+                    <div style="color: #4a5568; font-weight: 500;">Safe at hospital, family arrives</div>
+                </div>
+                <h3 class="scene-title">Resolution & Recovery</h3>
+                <p class="scene-description">
+                    Robert is safely transported to the hospital. Sarah arrives shortly after, having tracked the ambulance route.
+                </p>
+                <div class="system-response">
+                    ⚡ System Actions:
+                    <br>• Logs emergency event in Robert's health record
+                    <br>• Sends confirmation to Sarah: "Robert arrived at St. Mary's Hospital"
+                    <br>• Creates incident report for review
+                    <br>• Resets app to ready state
+                </div>
+                <div class="emotional-state">
+                    <div class="emotion">
+                        <div class="emotion-icon">😊</div>
+                        <div class="emotion-label">Grateful</div>
+                    </div>
+                    <div class="emotion">
+                        <div class="emotion-icon">🛡️</div>
+                        <div class="emotion-label">Protected</div>
+                    </div>
+                    <div class="emotion">
+                        <div class="emotion-icon">❤️</div>
+                        <div class="emotion-label">Cared For</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternative Scenario -->
+            <div class="story-card" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);">
+                <div class="scene-number" style="background: linear-gradient(135deg, #6b46c1 0%, #3182ce 100%);">Alternative: Voice-Only Scenario</div>
+                <div class="scene-illustration" style="background: #f9fafb;">
+                    <div class="icon">🗣️</div>
+                    <div style="color: #4a5568; font-weight: 500;">Hands-free emergency activation</div>
+                </div>
+                <h3 class="scene-title">If Robert Can't Use Hands</h3>
+                <p class="scene-description">
+                    Alternative journey: Robert is too weak to hold phone or has fallen and can't reach it.
+                </p>
+                <div class="user-action">
+                    👆 Voice Action: "Hey SafeRide, I need help!" or "Help me!"
+                </div>
+                <div class="system-response">
+                    ⚡ System:
+                    <br>• Activates via voice recognition (always listening mode)
+                    <br>• Confirms: "Calling emergency services now"
+                    <br>• Same automatic dispatch process
+                    <br>• Speakerphone enabled for communication
+                </div>
+                <div class="solution">
+                    ✅ Solution: Complete hands-free operation for worst-case scenarios
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <h3 class="legend-title">📋 Storyboard Legend</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e6fffa; border-left: 4px solid #38b2ac;"></div>
+                        <span>User Action</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fef5e7; border-left: 4px solid #f39c12;"></div>
+                        <span>System Response</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffe5e5; border-left: 4px solid #e53e3e;"></div>
+                        <span>Pain Point</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #e6f7ff; border-left: 4px solid #3182ce;"></div>
+                        <span>Solution</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

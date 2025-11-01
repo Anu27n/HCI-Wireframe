@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeRide - Interactive Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .screen-btn {
+            background: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .screen-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .screen-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .wireframe-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .phone-frame {
+            background: #1a1a1a;
+            border-radius: 40px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .phone-frame.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .phone-screen {
+            background: white;
+            width: 380px;
+            height: 720px;
+            border-radius: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: #666;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .screen-content {
+            padding: 20px;
+            height: calc(100% - 44px);
+            overflow-y: auto;
+        }
+
+        /* Home Screen Styles */
+        .sos-button {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            margin: 80px auto 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(229, 62, 62, 0.4);
+            transition: all 0.3s ease;
+            border: 8px solid #fc8181;
+        }
+
+        .sos-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(229, 62, 62, 0.6);
+        }
+
+        .sos-button .icon {
+            font-size: 5em;
+            margin-bottom: 10px;
+        }
+
+        .sos-button .text {
+            font-size: 2em;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .quick-action-btn {
+            background: #f0f4f8;
+            border: 2px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quick-action-btn:hover {
+            background: #e6f7ff;
+            border-color: #3182ce;
+        }
+
+        .quick-action-btn .icon {
+            font-size: 2.5em;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-btn .label {
+            font-size: 0.9em;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        /* Profile Screen Styles */
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px 20px;
+            margin: -20px -20px 20px -20px;
+            color: white;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            font-size: 5em;
+            margin-bottom: 10px;
+        }
+
+        .profile-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .profile-age {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .info-section h3 {
+            color: #2d3748;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #2d3748;
+            text-align: right;
+        }
+
+        .emergency-contact {
+            background: #fef5e7;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+        }
+
+        /* Tracking Screen Styles */
+        .map-container {
+            background: #e6f7ff;
+            height: 350px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #3182ce;
+        }
+
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: 
+                repeating-linear-gradient(45deg, #e6f7ff, #e6f7ff 10px, #bfdbfe 10px, #bfdbfe 20px);
+        }
+
+        .ambulance-icon {
+            font-size: 4em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .eta-banner {
+            background: linear-gradient(135deg, #38b2ac 0%, #2c7a7b 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .eta-time {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .eta-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .status-updates {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .status-icon {
+            font-size: 1.8em;
+        }
+
+        .status-text {
+            flex: 1;
+        }
+
+        .status-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 3px;
+        }
+
+        .status-time {
+            font-size: 0.85em;
+            color: #718096;
+        }
+
+        /* Emergency Active Screen */
+        .alert-header {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+            padding: 30px 20px;
+            margin: -20px -20px 20px -20px;
+            text-align: center;
+            animation: alertPulse 1.5s infinite;
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .alert-icon {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .alert-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .alert-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .location-box {
+            background: #e6f7ff;
+            border: 2px solid #3182ce;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .location-box h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .address {
+            color: #4a5568;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 18px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-call {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+        }
+
+        .btn-cancel {
+            background: #f8f9fa;
+            color: #2d3748;
+            border: 2px solid #e2e8f0;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Caregiver Dashboard */
+        .dashboard-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            color: #2d3748;
+            font-weight: bold;
+        }
+
+        .patient-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f0f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .patient-avatar {
+            font-size: 3em;
+        }
+
+        .patient-details h4 {
+            color: #2d3748;
+            margin-bottom: 5px;
+        }
+
+        .emergency-badge {
+            display: inline-block;
+            background: #e53e3e;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        /* Settings Screen */
+        .settings-list {
+            list-style: none;
+        }
+
+        .settings-item {
+            padding: 18px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .settings-item:hover {
+            background: #f8f9fa;
+            margin: 0 -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .settings-icon {
+            font-size: 1.8em;
+            width: 40px;
+            text-align: center;
+        }
+
+        .settings-label {
+            flex: 1;
+            font-size: 1.1em;
+            color: #2d3748;
+        }
+
+        .settings-arrow {
+            color: #cbd5e0;
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #cbd5e0;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #48bb78;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+
+        .screen-title {
+            font-size: 1.8em;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .back-button {
+            color: #3182ce;
+            font-size: 1.5em;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        /* Annotations */
+        .annotation {
+            position: absolute;
+            background: #2d3748;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+        .annotation::after {
+            content: '';
+            position: absolute;
+            border: 6px solid transparent;
+            border-top-color: #2d3748;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        @media (max-width: 768px) {
+            .phone-screen {
+                width: 340px;
+                height: 680px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: #e6f7ff;
+            color: #2a5298;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin: 5px 5px 5px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 SafeRide Interactive Wireframe</h1>
+            <p class="subtitle">Click buttons below to navigate different screens</p>
+        </header>
+
+        <div class="controls">
+            <button class="screen-btn active" onclick="showScreen('home')">🏠 Home</button>
+            <button class="screen-btn" onclick="showScreen('emergency')">🆘 Emergency Active</button>
+            <button class="screen-btn" onclick="showScreen('tracking')">🚑 Tracking</button>
+            <button class="screen-btn" onclick="showScreen('profile')">👤 Profile</button>
+            <button class="screen-btn" onclick="showScreen('caregiver')">👨‍👩‍👧 Caregiver</button>
+            <button class="screen-btn" onclick="showScreen('settings')">⚙️ Settings</button>
+        </div>
+
+        <div class="wireframe-container">
+            <!-- Home Screen -->
+            <div class="phone-frame active" id="screen-home">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 ⚡ 85%</span>
+                    </div>
+                    <div class="screen-content">
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="color: #2d3748; font-size: 2em;">SafeRide</h2>
+                            <p style="color: #718096;">Emergency Help Available 24/7</p>
+                        </div>
+                        
+                        <div class="sos-button" onclick="showScreen('emergency')">
+                            <div class="icon">🆘</div>
+                            <div class="text">SOS</div>
+                        </div>
+
+                        <p style="text-align: center; color: #4a5568; font-size: 1.1em; margin-bottom: 20px;">
+                            <strong>Press for Emergency</strong><br>
+                            or say "Help me!"
+                        </p>
+
+                        <div class="quick-actions">
+                            <div class="quick-action-btn" onclick="showScreen('profile')">
+                                <div class="icon">👤</div>
+                                <div class="label">My Profile</div>
+                            </div>
+                            <div class="quick-action-btn" onclick="showScreen('tracking')">
+                                <div class="icon">📍</div>
+                                <div class="label">My Location</div>
+                            </div>
+                            <div class="quick-action-btn">
+                                <div class="icon">👨‍👩‍👧</div>
+                                <div class="label">Contacts</div>
+                            </div>
+                            <div class="quick-action-btn" onclick="showScreen('settings')">
+                                <div class="icon">⚙️</div>
+                                <div class="label">Settings</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 25px; padding: 15px; background: #f0fff4; border-radius: 10px; border-left: 4px solid #48bb78;">
+                            <div style="display: flex; align-items: center; gap: 10px; color: #276749; font-weight: 600;">
+                                <span style="font-size: 1.5em;">✓</span>
+                                <span>You're Protected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Active Screen -->
+            <div class="phone-frame" id="screen-emergency">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <span>9:42</span>
+                        <span>📶 ⚡ 85%</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="alert-header">
+                            <div class="alert-icon">🚨</div>
+                            <div class="alert-title">HELP REQUESTED</div>
+                            <div class="alert-subtitle">Emergency services notified</div>
+                        </div>
+
+                        <div class="location-box">
+                            <h4><span>📍</span> Your Location Shared</h4>
+                            <div class="address">
+                                <strong>742 Evergreen Terrace</strong><br>
+                                Springfield, IL 62704<br>
+                                Apartment 3B
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>📋 Information Sent</h3>
+                            <div class="info-item">
+                                <span class="info-label">Medical Conditions</span>
+                                <span class="info-value">✓ Shared</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Current Medications</span>
+                                <span class="info-value">✓ Shared</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Emergency Contacts</span>
+                                <span class="info-value">✓ Notified</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="action-btn btn-call">
+                                <span style="font-size: 1.5em;">📞</span>
+                                <span>Call Dispatcher</span>
+                            </button>
+                            <button class="action-btn btn-cancel">
+                                <span>Cancel Emergency</span>
+                            </button>
+                        </div>
+
+                        <div style="margin-top: 20px; text-align: center; padding: 15px; background: #e6fffa; border-radius: 10px;">
+                            <div style="font-size: 1.2em; color: #2c7a7b; font-weight: bold;">
+                                🚑 Help is on the way
+                            </div>
+                            <div style="color: #4a5568; margin-top: 5px;">
+                                Stay calm. Do not move unless unsafe.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tracking Screen -->
+            <div class="phone-frame" id="screen-tracking">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <span>9:45</span>
+                        <span>📶 ⚡ 84%</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="back-button" onclick="showScreen('home')">← Back</div>
+                        
+                        <div class="eta-banner">
+                            <div class="eta-time">6 min</div>
+                            <div class="eta-label">Estimated Arrival</div>
+                        </div>
+
+                        <div class="map-container">
+                            <div class="map-placeholder">
+                                <div class="ambulance-icon">🚑</div>
+                                <div style="color: #2d3748; font-weight: bold; font-size: 1.2em; margin-top: 10px;">
+                                    Live Tracking Active
+                                </div>
+                                <div style="color: #4a5568; margin-top: 5px;">
+                                    2.3 miles away
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-updates">
+                            <h3 style="color: #2d3748; margin-bottom: 15px;">📡 Status Updates</h3>
+                            
+                            <div class="status-item">
+                                <div class="status-icon">✅</div>
+                                <div class="status-text">
+                                    <div class="status-title">Ambulance Dispatched</div>
+                                    <div class="status-time">2 minutes ago</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item">
+                                <div class="status-icon">👨‍👩‍👧</div>
+                                <div class="status-text">
+                                    <div class="status-title">Sarah (Daughter) Notified</div>
+                                    <div class="status-time">2 minutes ago</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item">
+                                <div class="status-icon">📍</div>
+                                <div class="status-text">
+                                    <div class="status-title">Location Shared</div>
+                                    <div class="status-time">2 minutes ago</div>
+                                </div>
+                            </div>
+
+                            <div class="status-item">
+                                <div class="status-icon">🏥</div>
+                                <div class="status-text">
+                                    <div class="status-title">Medical Info Sent</div>
+                                    <div class="status-time">2 minutes ago</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="action-btn btn-call" style="margin-top: 15px;">
+                            <span style="font-size: 1.5em;">📞</span>
+                            <span>Call Ambulance</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Screen -->
+            <div class="phone-frame" id="screen-profile">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 ⚡ 85%</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="profile-header">
+                            <div class="profile-avatar">👴</div>
+                            <div class="profile-name">Robert Thompson</div>
+                            <div class="profile-age">72 years old</div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>🏥 Medical Information</h3>
+                            <div class="info-item">
+                                <span class="info-label">Blood Type</span>
+                                <span class="info-value">O+</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Conditions</span>
+                                <span class="info-value">Diabetes, High BP</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Allergies</span>
+                                <span class="info-value">Penicillin</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Medications</span>
+                                <span class="info-value">Metformin, Lisinopril</span>
+                            </div>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>📍 Home Address</h3>
+                            <div class="info-item">
+                                <div style="line-height: 1.6;">
+                                    742 Evergreen Terrace<br>
+                                    Apartment 3B<br>
+                                    Springfield, IL 62704
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="emergency-contact">
+                            <h3 style="color: #2d3748; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                                <span>👨‍👩‍👧</span> Emergency Contact
+                            </h3>
+                            <div style="color: #4a5568;">
+                                <strong>Sarah Thompson</strong> (Daughter)<br>
+                                📱 (555) 123-4567<br>
+                                📧 sarah.thompson@email.com
+                            </div>
+                        </div>
+
+                        <button class="action-btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-top: 20px;">
+                            <span>Edit Profile</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Caregiver Dashboard -->
+            <div class="phone-frame" id="screen-caregiver">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <span>9:42</span>
+                        <span>📶 ⚡ 92%</span>
+                    </div>
+                    <div class="screen-content">
+                        <h2 class="screen-title">Caregiver Dashboard</h2>
+                        
+                        <div class="dashboard-card" style="background: #fff5f5; border: 2px solid #e53e3e;">
+                            <div class="card-header" style="border-color: #fc8181;">
+                                <div class="card-icon">🚨</div>
+                                <div>
+                                    <div class="card-title" style="color: #e53e3e;">Active Emergency</div>
+                                    <div style="font-size: 0.9em; color: #742a2a;">2 minutes ago</div>
+                                </div>
+                            </div>
+
+                            <div class="patient-info">
+                                <div class="patient-avatar">👴</div>
+                                <div class="patient-details">
+                                    <h4>Robert Thompson (Father)</h4>
+                                    <div style="color: #4a5568; font-size: 0.9em;">72 years old</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 15px;">
+                                <div style="font-weight: bold; color: #2d3748; margin-bottom: 8px;">📍 Location:</div>
+                                <div style="color: #4a5568;">742 Evergreen Terrace, Apt 3B<br>Springfield, IL 62704</div>
+                            </div>
+
+                            <div style="background: white; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                                <div style="font-weight: bold; color: #2d3748; margin-bottom: 8px;">🚑 Response Status:</div>
+                                <div style="color: #38a169; font-weight: 600;">
+                                    ✓ Ambulance dispatched - ETA 6 minutes
+                                </div>
+                            </div>
+
+                            <div class="action-buttons" style="grid-template-columns: 1fr 1fr;">
+                                <button class="action-btn btn-call" style="font-size: 0.95em; padding: 14px;">
+                                    <span>📞 Call</span>
+                                </button>
+                                <button class="action-btn" style="background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%); color: white; font-size: 0.95em; padding: 14px;">
+                                    <span>🗺️ Track</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <div class="card-icon">📊</div>
+                                <div class="card-title">Health Summary</div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Last Checkup</span>
+                                <span class="info-value">3 days ago</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Medications</span>
+                                <span class="info-value">Up to date ✓</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Recent Emergencies</span>
+                                <span class="info-value">0 (last 30 days)</span>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <div class="card-icon">⚙️</div>
+                                <div class="card-title">Notification Settings</div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <span style="color: #2d3748;">Emergency Alerts</span>
+                                <div class="toggle-switch active"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <span style="color: #2d3748;">Daily Health Reports</span>
+                                <div class="toggle-switch active"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: #2d3748;">Medication Reminders</span>
+                                <div class="toggle-switch active"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Screen -->
+            <div class="phone-frame" id="screen-settings">
+                <div class="phone-screen">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <span>📶 ⚡ 85%</span>
+                    </div>
+                    <div class="screen-content">
+                        <div class="back-button" onclick="showScreen('home')">← Back</div>
+                        <h2 class="screen-title">Settings</h2>
+
+                        <div style="background: #f8f9fa; border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+                            <ul class="settings-list">
+                                <li class="settings-item">
+                                    <div class="settings-icon">🔔</div>
+                                    <div class="settings-label">Notifications</div>
+                                    <div class="toggle-switch active"></div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">🎤</div>
+                                    <div class="settings-label">Voice Commands</div>
+                                    <div class="toggle-switch active"></div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">📳</div>
+                                    <div class="settings-label">Vibration Feedback</div>
+                                    <div class="toggle-switch active"></div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">🔊</div>
+                                    <div class="settings-label">Voice Announcements</div>
+                                    <div class="toggle-switch active"></div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #f8f9fa; border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+                            <ul class="settings-list">
+                                <li class="settings-item" onclick="showScreen('profile')">
+                                    <div class="settings-icon">👤</div>
+                                    <div class="settings-label">Edit Profile</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">🏥</div>
+                                    <div class="settings-label">Medical Information</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">👨‍👩‍👧</div>
+                                    <div class="settings-label">Emergency Contacts</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">📍</div>
+                                    <div class="settings-label">Location Services</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #f8f9fa; border-radius: 12px; overflow: hidden; margin-bottom: 20px;">
+                            <ul class="settings-list">
+                                <li class="settings-item">
+                                    <div class="settings-icon">🎨</div>
+                                    <div class="settings-label">Large Text Mode</div>
+                                    <div class="toggle-switch active"></div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">🌓</div>
+                                    <div class="settings-label">High Contrast</div>
+                                    <div class="toggle-switch"></div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">♿</div>
+                                    <div class="settings-label">Accessibility</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #f8f9fa; border-radius: 12px; overflow: hidden;">
+                            <ul class="settings-list">
+                                <li class="settings-item">
+                                    <div class="settings-icon">❓</div>
+                                    <div class="settings-label">Help & Support</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">📄</div>
+                                    <div class="settings-label">Privacy Policy</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                                <li class="settings-item">
+                                    <div class="settings-icon">ℹ️</div>
+                                    <div class="settings-label">About SafeRide</div>
+                                    <div class="settings-arrow">›</div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: white; border-radius: 20px; padding: 30px; margin-top: 40px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+            <h2 style="color: #2d3748; margin-bottom: 20px; text-align: center;">🎨 Design Specifications</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <h3 style="color: #2d3748; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>🎨</span> Colors
+                    </h3>
+                    <div style="color: #4a5568; line-height: 2;">
+                        <strong>Primary:</strong> #e53e3e (Red)<br>
+                        <strong>Secondary:</strong> #667eea (Purple)<br>
+                        <strong>Success:</strong> #38b2ac (Teal)<br>
+                        <strong>Background:</strong> #f8f9fa (Light Gray)<br>
+                        <strong>Text:</strong> #2d3748 (Dark Gray)
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <h3 style="color: #2d3748; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>📏</span> Typography
+                    </h3>
+                    <div style="color: #4a5568; line-height: 2;">
+                        <strong>Headings:</strong> 1.8em - 3em<br>
+                        <strong>Body:</strong> 1.1em - 1.2em<br>
+                        <strong>Small:</strong> 0.85em - 0.9em<br>
+                        <strong>Font:</strong> Arial, Sans-serif<br>
+                        <strong>Line Height:</strong> 1.6 - 1.8
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <h3 style="color: #2d3748; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>📱</span> Components
+                    </h3>
+                    <div style="color: #4a5568; line-height: 2;">
+                        <strong>SOS Button:</strong> 280px circle<br>
+                        <strong>Border Radius:</strong> 12-20px<br>
+                        <strong>Padding:</strong> 15-25px<br>
+                        <strong>Touch Target:</strong> Min 44px<br>
+                        <strong>Spacing:</strong> 15-30px gaps
+                    </div>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 12px;">
+                    <h3 style="color: #2d3748; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <span>♿</span> Accessibility
+                    </h3>
+                    <div style="color: #4a5568; line-height: 2;">
+                        <strong>Contrast:</strong> WCAG AAA<br>
+                        <strong>Min Font:</strong> 16px (1em)<br>
+                        <strong>Touch:</strong> 44px minimum<br>
+                        <strong>Voice:</strong> Full support<br>
+                        <strong>Screen Reader:</strong> Compatible
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #e6f7ff; border-radius: 12px; border-left: 4px solid #3182ce;">
+                <h3 style="color: #2d3748; margin-bottom: 10px;">💡 Key Wireframe Features</h3>
+                <div style="color: #4a5568; line-height: 1.8;">
+                    ✓ Large, accessible touch targets (SOS button 280px)<br>
+                    ✓ High contrast colors for visibility<br>
+                    ✓ Minimal navigation - critical features on home screen<br>
+                    ✓ Multi-modal input (touch, voice, gesture)<br>
+                    ✓ Clear visual feedback for all actions<br>
+                    ✓ Real-time status updates with progress indicators<br>
+                    ✓ Emergency contact integration<br>
+                    ✓ Caregiver dashboard for family members
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.phone-frame').forEach(frame => {
+                frame.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.screen-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById('screen-' + screenId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Add toggle functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('toggle-switch')) {
+                e.target.classList.toggle('active');
+            }
+        });
+    </script>
+</body>
+</html>
